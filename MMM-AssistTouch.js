@@ -5,39 +5,28 @@ Module.register("MMM-AssistTouch", {
         screens: ["home", "meds", "care"],
         startScreen: "home",
         homeScreen: "home",
-
         lockString: "MMM-AssistTouch",
         animationMs: 250,
         cooldownMs: 800,
-
         managedByDefault: false,
         defaultTag: "home",
         excludedModules: ["MMM-AssistTouch"],
-
         toastMs: 1200,
         storageKey: "MMM_AssistTouch_Screen",
-
         longPressMs: 650,
-
         showScreenIndicator: true,
-        // supported: "top_bar" | "top_left" | "top_right"
         screenIndicatorPosition: "top_left",
         screenIndicatorLabelMap: { home: "HOME", meds: "MEDS", care: "CARE" },
-
         blockSwipeWhenSimpleRemoteActive: false,
         blockLongPressWhenSimpleRemoteActive: false,
-
         enableKeyboard: true,
         keyNext: ["ArrowDown", "PageDown", " ", "n"],
         keyHome: ["Home", "h"],
-
-        // Mouse/web fallback: drag down anywhere to change screen
         enablePointerSwipe: true,
-        pointerSwipeThresholdPx: 120, // must drag down at least this far
-        pointerSwipeSlopPx: 8,        // ignore tiny jitters
-        pointerSwipeMaxMs: 900,       // must complete within this time
-        pointerSwipeButton: 0,        // left click only
-
+        pointerSwipeThresholdPx: 120,
+        pointerSwipeSlopPx: 8,
+        pointerSwipeMaxMs: 900,
+        pointerSwipeButton: 0,
         debugGestures: false
     },
 
@@ -45,14 +34,9 @@ Module.register("MMM-AssistTouch", {
         this._hammer = null;
         this._lastSwipeAt = 0;
         this._toastUntil = 0;
-
         this._onKeyDown = null;
-
         this._simpleRemoteActive = false;
-
-        // pointer swipe state
         this._ptr = { active: false, id: null, x0: 0, y0: 0, t0: 0 };
-
         this._onPtrDown = null;
         this._onPtrMove = null;
         this._onPtrUp = null;
@@ -131,7 +115,7 @@ Module.register("MMM-AssistTouch", {
             return;
         }
 
-        if (notification === "REMOTE_ALERT_ACK" && payload && payload.alertId) {
+        if ((notification === "REMOTE_ALERT_ACK" || notification === "REMOTE_ALERT_CLEARED") && payload && payload.alertId) {
             this._simpleRemoteActive = false;
             return;
         }
@@ -141,7 +125,7 @@ Module.register("MMM-AssistTouch", {
             return;
         }
 
-        if (notification === "ASSIST_SCREEN_SET" && payload && payload.screen) {
+        if ((notification === "ASSIST_SCREEN_SET" || notification === "ASSIST_SCREEN_CHANGED") && payload && payload.screen) {
             const idx = this._screens.indexOf(String(payload.screen));
             if (idx >= 0) {
                 this.current = idx;
@@ -226,7 +210,6 @@ Module.register("MMM-AssistTouch", {
         this._onKeyDown = null;
     },
 
-
     _attachPointerSwipe() {
         if (!this.config.enablePointerSwipe) return;
         if (this._onPtrDown) return;
@@ -237,9 +220,7 @@ Module.register("MMM-AssistTouch", {
         const btn = Number.isFinite(Number(this.config.pointerSwipeButton)) ? Number(this.config.pointerSwipeButton) : 0;
 
         this._onPtrDown = (e) => {
-            // left mouse only; allow touch/pen (button often 0 there too)
             if (typeof e.button === "number" && e.button !== btn) return;
-            // ignore right click etc
             if (e.isPrimary === false) return;
 
             this._ptr.active = true;
@@ -257,10 +238,8 @@ Module.register("MMM-AssistTouch", {
             const dy = e.clientY - this._ptr.y0;
             const dt = Date.now() - this._ptr.t0;
 
-            // ignore tiny jitter
             if (Math.abs(dx) < slop && Math.abs(dy) < slop) return;
 
-            // trigger only on clear downward drag
             if (dy >= threshold && dt <= maxMs) {
                 this._ptr.active = false;
                 this._ptr.id = null;
@@ -275,7 +254,6 @@ Module.register("MMM-AssistTouch", {
             this._ptr.active = false;
             this._ptr.id = null;
         };
-
 
         document.addEventListener("pointerdown", this._onPtrDown, true);
         document.addEventListener("pointermove", this._onPtrMove, true);
