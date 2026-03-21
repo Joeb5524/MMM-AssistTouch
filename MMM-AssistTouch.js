@@ -2,7 +2,7 @@
 
 Module.register("MMM-AssistTouch", {
     defaults: {
-        screens: ["home", "meds", "care"],
+        screens: ["home", "meds", "care", "joe"],
         startScreen: "home",
         homeScreen: "home",
         lockString: "MMM-AssistTouch",
@@ -16,7 +16,7 @@ Module.register("MMM-AssistTouch", {
         longPressMs: 650,
         showScreenIndicator: true,
         screenIndicatorPosition: "top_left",
-        screenIndicatorLabelMap: { home: "HOME", meds: "MEDS", care: "CARE" },
+        screenIndicatorLabelMap: { home: "HOME", meds: "MEDS", care: "CARE", joe: "Joe" },
         blockSwipeWhenSimpleRemoteActive: false,
         blockLongPressWhenSimpleRemoteActive: false,
         enableKeyboard: true,
