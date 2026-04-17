@@ -10,6 +10,18 @@ html, body {
     z-index: 9997;
 }
 
+.mat-toast,
+.mat-indicator {
+    border: 1px solid rgba(105, 213, 255, 0.22);
+    background: linear-gradient(160deg, rgba(17, 30, 44, 0.92), rgba(6, 12, 18, 0.88));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
 .mat-toast {
     position: absolute;
     top: 18px;
@@ -18,9 +30,6 @@ html, body {
     opacity: 0;
     padding: 10px 14px;
     border-radius: 12px;
-    background: rgba(0,0,0,0.65);
-    font-size: 18px;
-    letter-spacing: 0.5px;
     transition: opacity 120ms linear;
 }
 
@@ -33,26 +42,23 @@ html, body {
     z-index: 9998;
     padding: 6px 10px;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.55);
-    font-size: 18px;
-    letter-spacing: 0.12em;
     pointer-events: none;
 }
 
 .mat-indicator--top_bar {
-    top: 10px;
+    top: max(10px, env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
 }
 
 .mat-indicator--top_right {
-    top: 10px;
-    right: 10px;
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
     transform: none;
 }
 
 .mat-indicator--top_left {
-    top: 10px;
-    left: 10px;
+    top: max(10px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
     transform: none;
 }
